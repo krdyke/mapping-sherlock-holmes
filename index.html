@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mapping Sherlock Holmes</title>
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1,user-scalable=no" />
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
+        <!--<link rel="stylesheet" href="//libs.cartocdn.com/cartodb.js/v3/3.11/themes/css/cartodb.css" />-->
+        <!--
+        <link rel="stylesheet" href="Leaflet.markercluster/MarkerCluster.css" />
+        <link rel="stylesheet" href="Leaflet.markercluster/MarkerCluster.Default.css" />
+        -->
+        <!--     <link rel="stylesheet" href="Leaflet.draw/leaflet.draw.css" />-->
+        <!--<link rel="stylesheet" type="text/css" href="//cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/1.0.0-rc.4/esri-leaflet-geocoder.css">-->
+        <!--<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />-->
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+        <link rel="stylesheet" href="https://cdn.rawgit.com/CliffCloud/Leaflet.EasyButton/f3f3136bda3937aa813c80a1a6c8c921c6df06ed/src/easy-button.css" />
+        <link rel="stylesheet" href="lib/vex/vex.css" />
+        <!--<link rel="stylesheet" href="lib/chosen/chosen.css" />-->
+        <link rel="stylesheet" href="lib/vex/vex-theme-os.css" />
+        <link rel="stylesheet" href="lib/jquery-ui-1.9.2.custom/css/ui-lightness/jquery-ui-1.9.2.custom.min.css" />
+        <link rel="stylesheet" href="exlib/leaflet-slider.css" />
+        <link rel="stylesheet" href="build/style.css" />
+        <link href='//fonts.googleapis.com/css?family=Cinzel:700|Goudy+Bookletter+1911' rel='stylesheet' type='text/css'>
+        <style>
+        html, body, #map {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        #loading{
+            position:absolute;
+            height:100%;
+            width:100%;
+            background-image:url("images/loader.gif");
+            background-repeat:no-repeat;
+            background-position:center;
+            display:none;
+            z-index:1000;
+        }
+
+
+        .easy-button-button {
+            cursor: pointer;
+        }
+
+        .fa-mapicon {
+            font-size: 1.333333333333em;
+        }
+
+        .leaflet-bar {
+            box-shadow:none;
+        }
+
+        #arrow-bar{
+            margin-top:20px;
+        }
+        #arrow-bar button, #arrow-bar button:hover {
+            display: inline-block;
+            margin-left: 2px;
+            margin-right: 2px;
+
+        }
+
+        /* z-index adjust so slider stuff will be below the dropdown */
+        .slider.leaflet-control, #arrow-bar {
+            z-index: 6;
+        }
+
+    #slider-timestamp {
+        width:55%;
+        margin-top:25px;
+        background-color:#FFFFFF; 
+        border-radius:5px;
+        padding: 5px;
+        font-family: 'Goudy Bookletter 1911', serif;
+    }
+    #story-list .collection-title {
+        font-family: 'Cinzel', serif;
+        font-size: 1.1em;
+        padding: 6px;
+        margin: 8px;
+
+    }
+
+    #story-list li {
+        left: 2em;
+        position: relative;
+        list-style-type: none;
+        padding: 4px;
+        margin: 6px;
+        background-color: #ccebc5;
+        color: #545454;
+        font-family: 'Goudy Bookletter 1911', serif;
+        border-radius: 3px;
+        width: 85%;
+        transition: background-color 0.2s;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+
+    }
+
+    #story-list li:hover {
+        background-color: #b4cead;
+    }
+
+    #story-list li.selected {
+        background-color: #ffa20f;
+    }
+
+    #story-list .collection-title {
+        left:0;
+        margin: 0.7em 0 0.7em 0;
+        padding: 0.25em 0 0.25em 0;
+
+    }
+
+    #select-stories {
+        width: auto;
+        font-size: 1.2em;
+    }
+
+
+    /*
+    \ \ / / _ \ \/ /
+     \ V |  __/>  < 
+      \_/ \___/_/\_\                
+    */
+    .vex.vex-theme-os {
+        padding-top:5%;
+        padding-bottom:0;
+    }
+
+    .vex.vex-theme-os .vex-dialog-button:focus {
+            animation: none;
+    -webkit-animation: none;
+       -moz-animation: none;
+        -ms-animation: none;
+         -o-animation: none;
+         -webkit-backface-visibility: hidden;
+         outline: none;
+    }
+
+    .vex.vex-theme-os .vex-content, .vex.vex-theme-os .vex-dialog-header{
+        background-image:url("images/holmes-bg.jpg");
+    }
+    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-notaplace {
+        background: #B34F15;
+        color: #fff; }
+    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-wrongplace {
+        background: #88991A;
+        color: #fff; }
+    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-onlymentioned {
+        background: #EA564A;
+        color: #fff; }
+
+    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-primary:hover {
+        background: #3898ff;
+    }
+    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-secondary:hover {
+        background: #f2f2f2;
+    }
+    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-notaplace:hover {
+        background: #e5621b;
+    }
+    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-wrongplace:hover {
+        background: #a1b21e;
+    }
+    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-onlymentioned:hover {
+        background: #ff5d51;
+    }
+
+    .vex.vex-theme-os .vex-content {
+        border-top: none;
+        max-height:98%;
+    }
+    .vex.vex-theme-os .vex-dialog-header {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        left: 0;
+        border-radius: 5px;
+        padding: 10px 0 5px 10px;
+    }
+
+    .vex.vex-theme-os .vex-dialog-story-title, .vex.vex-theme-os .vex-dialog-button, .title-text {
+        font-family: 'Cinzel', serif;
+    }
+
+    .vex.vex-theme-os .vex-dialog-story-title {
+        font-size: 1.3em;
+    }
+    .vex.vex-theme-os .vex-dialog-form .vex-dialog-message, 
+    .vex.vex-theme-os .vex-dialog-form .vex-dialog-input {
+        max-height: 250px;
+        overflow: auto;
+    }
+    .vex.vex-theme-os .vex-dialog-form .vex-dialog-message {
+        margin-bottom: 0.5em;
+    }
+    .vex.vex-theme-os .vex-dialog-form .vex-dialog-text {
+        font-family: 'Goudy Bookletter 1911', serif;
+    }
+    .vex.vex-theme-os .vex-overlay {
+        pointer-events: none;
+    }
+    </style>
+  </head>
+
+  <body onload="main()">
+  
+    <div id="map">
+        <div id="loading"></div>
+    </div>
+
+    <div id="story-list">
+        <li class="collection-title selected">A Study In Scarlet</li>
+        <li class="collection-title">The Sign of the Four</li>
+        <span class="collection-title">The Adventures of Sherlock Holmes</span>
+        <li>A Scandal in Bohemia</li>
+        <li>The Red-Headed League</li>
+        <li>A Case of Identity</li>
+        <li>The Boscombe Valley Mystery</li>
+        <li>The Five Orange Pips</li>
+        <li>The Man with the Twisted Lip</li>
+        <li>The Adventure of the Blue Carbuncle</li>
+        <li>The Adventure of the Speckled Band</li>
+        <li>The Adventure of the Engineer's Thumb</li>
+        <li>The Adventure of the Noble Bachelor</li>
+        <li>The Adventure of the Beryl Coronet</li>
+        <li>The Adventure of the Copper Beeches</li> 
+        <span class="collection-title">The Memoirs of Sherlock Holmes</span>
+        <li>Silver Blaze</li>
+        <li>The Yellow Face</li>
+        <li>The Stock-Broker's Clerk</li>
+        <li>The "Gloria Scott"</li>
+        <li>The Musgrave Ritual</li>
+        <li>The Reigate Squires</li>
+        <li>The Crooked Man</li>
+        <li>The Resident Patient</li>
+        <li>The Greek Interpreter</li>
+        <li>The Naval Treaty</li>
+        <li>The Final Problem</li>
+        <span class="collection-title">The Return of Sherlock Holmes</span>
+        <li>The Adventure of the Empty House</li>
+        <li>The Adventure of the Norwood Builder</li>
+        <li>The Adventure of the Dancing Men</li>
+        <li>The Adventure of the Solitary Cyclist</li>
+        <li>The Adventure of the Priory School</li>
+        <li>The Adventure of Black Peter</li>
+        <li>The Adventure of Charles Augustus Milverton</li>
+        <li>The Adventure of the Six Napoleons</li>
+        <li>The Adventure of the Three Students</li>
+        <li>The Adventure of the Golden Pince-Nez</li>
+        <li>The Adventure of the Missing Three-Quarter</li>
+        <li>The Adventure of the Abbey Grange</li>
+        <li>The Adventure of the Second Stain</li>
+        <li class="collection-title">The Hound of the Baskervilles</li>
+        <li class="collection-title">The Valley Of Fear</li>
+        <span class="collection-title">His Last Bow</span>
+        <li>The Adventure of Wisteria Lodge</li>
+        <li>The Adventure of the Cardboard Box</li>
+        <li>The Adventure of the Red Circle</li>
+        <li>The Adventure of the Bruce-Partington Plans</li>
+        <li>The Adventure of the Dying Detective</li>
+        <li>The Disappearance of Lady Frances Carfax</li>
+        <li>The Adventure of the Devil's Foot</li>
+        <li>His Last Bow</li>
+        <span class="collection-title">The Case-Book of Sherlock Holmes</span>
+        <li>The Illustrious Client</li>
+        <li>The Blanched Soldier</li>
+        <li>The Adventure Of The Mazarin Stone</li>
+        <li>The Adventure of the Three Gables</li>
+        <li>The Adventure of the Sussex Vampire</li>
+        <li>The Adventure of the Three Garridebs</li>
+        <li>The Problem of Thor Bridge</li>
+        <li>The Adventure of the Creeping Man</li>
+        <li>The Adventure of the Lion's Mane</li>
+        <li>The Adventure of the Veiled Lodger</li>
+        <li>The Adventure of Shoscombe Old Place</li>
+        <li>The Adventure of the Retired Colourman</li>
+    </div>
+    <!--<script src="build/libs.js"></script>-->
+    <script src="build/libs.min.js"></script>
+    <!--  <script src="exlib/leaflet-slider.js"></script>-->
+    <script src="build/src.js"></script>
+  </body>
+</html>
