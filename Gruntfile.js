@@ -17,9 +17,7 @@ module.exports = function(grunt) {
                         //'lib/cartodb.js/cartodb.uncompressed.js',
                         //'lib/esri-leaflet/esri-leaflet.js',
                         'lib/jquery/jquery.js',
-                        'lib/leaflet/leaflet-src.js',
                         'lib/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js',
-                        'exlib/Control.Geocoder.js',
                         'exlib/classList.js',
                         'lib/reqwest/reqwest.js',
                         //'lib/esri-leaflet-geocoder/esri-leaflet-geocoder.js',
@@ -27,9 +25,9 @@ module.exports = function(grunt) {
                         //'lib/leaflet.draw/leaflet.draw-src.js',
                         'lib/vex/vex.js',
                         'lib/vex/vex.dialog.js',
-                        'lib/jqueryui-touch-punch/jquery.ui.touch-punch.js'
+                        //'lib/jqueryui-touch-punch/jquery.ui.touch-punch.js'
                        // 'lib/chosen/chosen.jquery.min.js'
-    
+
                     ]
                 }
             }
@@ -59,8 +57,10 @@ module.exports = function(grunt) {
             },
             */
             src: {
-                src: [ 
+                src: [
+                    'lib/leaflet/leaflet-src.js',
                     'lib/Leaflet.EasyButton/easy-button.js',
+                    'exlib/Control.Geocoder.js',
                     'lib/leaflet-slider/SliderControl.js',
                     'lib/Leaflet.Polyline.SnakeAnim/L.Polyline.SnakeAnim.js',
                     'src/script.js'

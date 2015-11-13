@@ -2,10 +2,10 @@
 vex.defaultOptions.className = 'vex-theme-os';
 
 //textContent polyfill for IE8
-if (Object.defineProperty 
-    && Object.getOwnPropertyDescriptor 
-    && Object.getOwnPropertyDescriptor(Element.prototype, "textContent") 
-    && !Object.getOwnPropertyDescriptor(Element.prototype, "textContent").get) {
+if (Object.defineProperty &&
+    Object.getOwnPropertyDescriptor &&
+    Object.getOwnPropertyDescriptor(Element.prototype, "textContent") &&
+    !Object.getOwnPropertyDescriptor(Element.prototype, "textContent").get) {
     (function() {
         var innerText = Object.getOwnPropertyDescriptor(Element.prototype, "innerText");
         Object.defineProperty(Element.prototype, "textContent",
@@ -27,7 +27,7 @@ if (Object.defineProperty
 if (!Array.prototype.indexOf) {
     Array.prototype.indexOf = function(searchElement, fromIndex) {
         var k;
-        if (this == null) {
+        if (this === null) {
             throw new TypeError('"this" is null or not defined');
         }
         var O = Object(this);
@@ -70,8 +70,8 @@ Array.prototype.unique = function() {
             arr.push(this[i]);
         }
     }
-    return arr; 
-}
+    return arr;
+};
 
 var holmes_map = {};
 
@@ -98,7 +98,6 @@ holmes_map.toggle_story = function(story){
     else {
         holmes_map.story_array.splice(holmes_map.story_array.indexOf(story), 1);
     }
-    console.log(holmes_map.story_array);
 };
 
 holmes_map.story_list = document.getElementById("story-list");
@@ -116,6 +115,8 @@ holmes_map.base_marker_style = {
     opacity: 0.25,
     fillOpacity: 0.55
 };
+
+L.Icon.Default.imagePath = "/lib/leaflet/";
 
 holmes_map.animate_story = {};
 
@@ -167,13 +168,15 @@ holmes_map.animate_story.sort_layers_by_charindex = function(layers_list){
     });
 };
 
+
 holmes_map.animate_story.get_list_of_layers = function(){
     layers = [];
-    for (i in holmes_map.cartodb_layer._layers){
+    for (var i in holmes_map.cartodb_layer._layers){
         layers.push(holmes_map.cartodb_layer._layers[i]);
     }
     return layers;
 };
+
 
 holmes_map.animate_story.add_tweener_polylines = function(layers){
     var l = [], g;
@@ -190,18 +193,17 @@ holmes_map.animate_story.add_tweener_polylines = function(layers){
     return l;
 };
 
+
 holmes_map.animate_story.create_layer_group = function(layers){
-    holmes_map.animate_story.layer_group = L.layerGroup(); 
+    holmes_map.animate_story.layer_group = L.layerGroup();
     holmes_map.animate_story.layer_group.options.snakingLayers = layers;
-    holmes_map.animate_story.layer_group.options.snakingSpeed = 400;
-    holmes_map.animate_story.layer_group.options.snakingPause = 400;
+    holmes_map.animate_story.layer_group.options.snakingPause = 3000;
     return holmes_map.animate_story.layer_group;
 };
 
 
-
 holmes_map.select_story_button = L.easyButton(
-    "<span class='title-text'>Select Stories</span>",
+    "<span class='title-text'>Select<br/>Stories</span>",
     function(btn, map){
         vex.dialog.open({
             message: "Please select the stories to view",
@@ -214,8 +216,9 @@ holmes_map.select_story_button = L.easyButton(
             buttons: [
                 vex.dialog.buttons.YES,
                 vex.dialog.buttons.NO,
-                $.extend({}, vex.dialog.buttons.NO, { className: 'vex-dialog-button-notaplace', 
-                    text: 'All/None', 
+                $.extend({}, vex.dialog.buttons.NO, {
+                    className: 'vex-dialog-button-notaplace',
+                    text: 'All/None',
                 click: function($vexContent, event) {
                     console.log("select all/none here");
                 }})
@@ -267,20 +270,20 @@ holmes_map.cartodb_layer_click = function(a){
     vex.dialog.open({
         message: popupContent,
         buttons: [
-        $.extend({}, vex.dialog.buttons.NO, { className: 'vex-dialog-button-notaplace', 
-            text: 'This is not a place!', 
+        $.extend({}, vex.dialog.buttons.NO, { className: 'vex-dialog-button-notaplace',
+            text: 'This is not a place!',
         click: function($vexContent, event) {
             var id = $vexContent.find(".id-hidden").val();
             holmes_map.place_report(id, "not a place");
         }}),
-        $.extend({}, vex.dialog.buttons.NO, { className: 'vex-dialog-button-wrongplace', 
-            text: 'This is in the wrong place!', 
+        $.extend({}, vex.dialog.buttons.NO, { className: 'vex-dialog-button-wrongplace',
+            text: 'This is in the wrong place!',
         click: function($vexContent, event) {
             var id = $vexContent.find(".id-hidden").val();
             holmes_map.place_report(id, "wrong place");
         }}),
-        $.extend({}, vex.dialog.buttons.NO, { className: 'vex-dialog-button-onlymentioned', 
-            text: 'This place was only mentioned and not a part of the story.', 
+        $.extend({}, vex.dialog.buttons.NO, { className: 'vex-dialog-button-onlymentioned',
+            text: 'This place was only mentioned and not a part of the story.',
         click: function($vexContent, event) {
             var id = $vexContent.find(".id-hidden").val();
             holmes_map.place_report(id, "mention");
@@ -303,7 +306,7 @@ holmes_map.place_report = function(id, type){
             query = query + "'wrong_place');";
             break;
         case "mention":
-            query = query + "'only_mentioned');"; 
+            query = query + "'only_mentioned');";
             break;
     }
 
@@ -314,8 +317,8 @@ holmes_map.place_report = function(id, type){
         $("#loading").hide();
         holmes_map.update_layer();
     },"none");
-    
-}
+
+};
 
 holmes_map.set_query = function(story_array){
     var array, story_string, query;
@@ -338,7 +341,7 @@ holmes_map.update_layer = function(){
         holmes_map.cartodb_layer.setStyle(function(feature){
             var i = a.indexOf(feature.properties.storytitle.toLowerCase()) % 8;
             if (i >= 0){
-                return {"fillColor": holmes_map.UNIQUE_COLOR_ARRAY[i]}
+                return {"fillColor": holmes_map.UNIQUE_COLOR_ARRAY[i]};
             }
             else {
                 console.log("STORY NOT FOUND: " + feature.properties.storytitle);
@@ -361,7 +364,7 @@ holmes_map.update_story_selection = function(){
 };
 
 holmes_map.zoom_to_full_extent_button = L.easyButton(
-    "fa-globe fa-mapicon", 
+    "fa-globe fa-mapicon",
     function(){
         holmes_map.map.setZoom(2);
     },
@@ -412,8 +415,6 @@ function main() {
 
     holmes_map.select_story_button.addTo(map);
     holmes_map.animate_story.play_button.addTo(map);
-
-        
     holmes_map.zoom_to_full_extent_button.addTo(map);
 
     /*
@@ -429,8 +430,32 @@ function main() {
     var geocode = new L.Control.Geocoder({
         "position" : "topleft",
         "geocoder" : new L.Control.Geocoder.mapbox(holmes_map.MAPBOX_KEY)
-    }).addTo(holmes_map.map)
+    }).addTo(map);
 
+    geocode.markGeocode = function(result){
+        var bbox = result.bbox;
+        var poly = L.polygon([
+             bbox.getSouthEast(),
+             bbox.getNorthEast(),
+             bbox.getNorthWest(),
+             bbox.getSouthWest()
+        ], {"opacity": 0.4,
+            "weight": 2,
+            "color": 'rgb(228,26,28)',
+            "className": "geocode-bbox"}
+        );
+        poly.addTo(map);
+        map.fitBounds(bbox, {
+            padding: [15,15]
+        });
+        setTimeout(function(){
+            $(".geocode-bbox").animate({ opacity: 0 }, 1000, function() {
+                   // Animation complete.
+             });
+        }, 2000);
+    };
+
+/*
     holmes_map.slider_toggle = L.easyButton({
         states:[
         {
@@ -465,6 +490,7 @@ function main() {
         }],
         position:"topright"
     }).addTo(map);
+    */
 /*
     var searchControl = new L.esri.Geocoding.Controls.Geosearch({
         useMapBounds: false,
@@ -512,11 +538,11 @@ function main() {
                 $("#loading").hide();
             }
         });
-    }
+    };
 
-    holmes_map.base_query = "SELECT cartodb_id, text_chunk, name, charindex, storytitle, the_geom FROM " + holmes_map.TABLE_NAME; 
+    holmes_map.base_query = "SELECT cartodb_id, text_chunk, name, charindex, storytitle, the_geom FROM " + holmes_map.TABLE_NAME;
     holmes_map.exclude_marked = " AND not_a_place IS NOT TRUE AND only_mentioned IS NOT TRUE AND wrong_place IS NOT TRUE";
-    
+
 /*
     var title_select = $("#title-select").detach();
 
@@ -528,7 +554,7 @@ function main() {
     .change(holmes_map.update_story_selection);
 */
 
-    //keep map from scrolling when scrolling through options 
+    //keep map from scrolling when scrolling through options
 /*
     $(".chosen-container").bind('mousewheel DOMMouseScroll click drag dragstart dragend dblclick', function (e) {
         L.DomEvent.stopPropagation(e);
@@ -549,7 +575,7 @@ function main() {
         holmes_map.cartodb_layer.on("click", holmes_map.cartodb_layer_click);
 
         map.addLayer(holmes_map.cartodb_layer);
-
+/*
         holmes_map.slider_control = L.control.sliderControl({
             position: "topright",
             layer: holmes_map.cartodb_layer,
@@ -559,17 +585,17 @@ function main() {
             slideAttribute: "charindex",
             displayAttribute: "name",
             comparatorFunc: function(a,b){
-                if (a.feature.properties["charindex"] > b.feature.properties["charindex"]){
-                    return 1
+                if (a.feature.properties.charindex > b.feature.properties.charindex){
+                    return 1;
                 }
-                else if (a.feature.properties["charindex"] < b.feature.properties["charindex"]){
-                    return -1
+                else if (a.feature.properties.charindex < b.feature.properties.charindex){
+                    return -1;
                 }
                 else {
-                    return 0
+                    return 0;
                 }
             }
-        })
+        });
 
         holmes_map.slider_control_right = L.easyButton(
             "fa-arrow-right fa-mapicon",
@@ -580,7 +606,7 @@ function main() {
             "Next place",
             {
                 "position" : "bottomright",
-                
+
             });
 
         holmes_map.slider_control_left = L.easyButton(
@@ -594,7 +620,6 @@ function main() {
                 "position" : "bottomright",
             });
 
-
+*/
     });
 }
-

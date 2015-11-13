@@ -72,12 +72,12 @@
     #slider-timestamp {
         width:55%;
         margin-top:25px;
-        background-color:#FFFFFF; 
+        background-color:#FFFFFF;
         border-radius:5px;
         padding: 5px;
         font-family: 'Goudy Bookletter 1911', serif;
     }
-    #story-list .collection-title {
+    .collection-title {
         font-family: 'Cinzel', serif;
         font-size: 1.1em;
         padding: 6px;
@@ -124,14 +124,17 @@
 
     #select-stories {
         width: auto;
+        height: auto;
         font-size: 1.2em;
+        line-height: 1.1;
+
     }
 
 
     /*
     \ \ / / _ \ \/ /
-     \ V |  __/>  < 
-      \_/ \___/_/\_\                
+     \ V |  __/>  <
+      \_/ \___/_/\_\
     */
     .vex.vex-theme-os {
         padding-top:5%;
@@ -197,7 +200,7 @@
     .vex.vex-theme-os .vex-dialog-story-title {
         font-size: 1.3em;
     }
-    .vex.vex-theme-os .vex-dialog-form .vex-dialog-message, 
+    .vex.vex-theme-os .vex-dialog-form .vex-dialog-message,
     .vex.vex-theme-os .vex-dialog-form .vex-dialog-input {
         max-height: 250px;
         overflow: auto;
@@ -215,9 +218,12 @@
   </head>
 
   <body onload="main()">
-  
+
     <div id="map">
         <div id="loading"></div>
+        <div class='leaflet-bottom leaflet-left leaflet-control-container'>
+            <span class="collection-title">A STUDY IN SCARLET</span>
+        </div>
     </div>
 
     <div id="story-list">
@@ -235,7 +241,7 @@
         <li>The Adventure of the Engineer's Thumb</li>
         <li>The Adventure of the Noble Bachelor</li>
         <li>The Adventure of the Beryl Coronet</li>
-        <li>The Adventure of the Copper Beeches</li> 
+        <li>The Adventure of the Copper Beeches</li>
         <span class="collection-title">The Memoirs of Sherlock Holmes</span>
         <li>Silver Blaze</li>
         <li>The Yellow Face</li>

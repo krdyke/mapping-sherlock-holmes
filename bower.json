@@ -21,7 +21,7 @@
     "jqueryui-touch-punch": "*",
     "jquery": "~2.1.4",
     "reqwest": "~2.0.5",
-    "Leaflet.Polyline.SnakeAnim": "https://github.com/krdyke/Leaflet.Polyline.SnakeAnim.git#v0.1.1"
+    "Leaflet.Polyline.SnakeAnim": "https://github.com/krdyke/Leaflet.Polyline.SnakeAnim.git#master"
   },
   "resolutions": {
     "leaflet": "~1.0.0-beta.2"
