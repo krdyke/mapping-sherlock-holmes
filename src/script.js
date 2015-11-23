@@ -262,7 +262,7 @@ holmes_map.cartodb_layer_click = function(a){
     var title = a.layer.feature.properties.storytitle;
     var name = a.layer.feature.properties.name;
     var chunk = a.layer.feature.properties.text_chunk.replace(name, "<b>" + name + "</b>");
-    var popupContent = "<span class='vex-dialog-header'><span class='vex-dialog-story-title'>" + title + "</span><br/>"+
+    var popupContent = "<span class='vex-dialog-header'><div class='response'><span class='response-group'><img height='100px' width='81px' src='Holmes_silhouette.png'/> <span class='response-text'> Thanks!</span></span></div><span class='vex-dialog-story-title'>" + title + "</span><br/>"+
         "<b>Place: </b>" + name + "</span></span><br/><hr/>"+
         "<span class='vex-dialog-text'>... "+ chunk + " ...</span><br/><br/>"+
         "<input type='hidden' class='id-hidden' value='+" + a.layer._leaflet_id + "'/>";
@@ -315,6 +315,8 @@ holmes_map.place_report = function(id, type){
     holmes_map.sql(query, function(resp){
         console.log(resp);
         $("#loading").hide();
+        $(".response").fadeIn(500).delay(1500).fadeOut(2000);
+        holmes_map.cartodb_layer.clearLayers();
         holmes_map.update_layer();
     },"none");
 
@@ -331,6 +333,7 @@ holmes_map.set_query = function(story_array){
     story_string = "('" + array.join("', '") + "')";
     query = holmes_map.base_query + " WHERE lower(storytitle) IN " + story_string;
     query = query + holmes_map.exclude_marked;
+    query = query + holmes_map.exclude_features;
     holmes_map.last_query = query;
 };
 
@@ -339,7 +342,7 @@ holmes_map.update_layer = function(){
         var a = holmes_map.get_story_array();
         holmes_map.cartodb_layer.addData(geojson);
         holmes_map.cartodb_layer.setStyle(function(feature){
-            var i = a.indexOf(feature.properties.storytitle.toLowerCase()) % 8;
+            var i = a.indexOf(feature.properties.storytitle.toLowerCase().replace(/'/g,"\'\'")) % 8;
             if (i >= 0){
                 return {"fillColor": holmes_map.UNIQUE_COLOR_ARRAY[i]};
             }
@@ -542,6 +545,9 @@ function main() {
 
     holmes_map.base_query = "SELECT cartodb_id, text_chunk, name, charindex, storytitle, the_geom FROM " + holmes_map.TABLE_NAME;
     holmes_map.exclude_marked = " AND not_a_place IS NOT TRUE AND only_mentioned IS NOT TRUE AND wrong_place IS NOT TRUE";
+
+    // exclude countries and continents
+    holmes_map.exclude_features = " AND featurecode NOT IN ('CONT', 'PCLI')";
 
 /*
     var title_select = $("#title-select").detach();

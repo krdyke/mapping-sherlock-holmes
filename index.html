@@ -24,196 +24,220 @@
         <link rel="stylesheet" href="build/style.css" />
         <link href='//fonts.googleapis.com/css?family=Cinzel:700|Goudy+Bookletter+1911' rel='stylesheet' type='text/css'>
         <style>
-        html, body, #map {
-            height: 100%;
-            padding: 0;
-            margin: 0;
+            html, body, #map {
+                height: 100%;
+                padding: 0;
+                margin: 0;
+            }
+
+            #loading{
+                position:absolute;
+                height:100%;
+                width:100%;
+                background-image:url("images/loader.gif");
+                background-repeat:no-repeat;
+                background-position:center;
+                display:none;
+                z-index:1000;
+            }
+
+
+            .easy-button-button {
+                cursor: pointer;
+            }
+
+            .fa-mapicon {
+                font-size: 1.333333333333em;
+            }
+
+            .leaflet-bar {
+                box-shadow:none;
+            }
+
+            #arrow-bar{
+                margin-top:20px;
+            }
+            #arrow-bar button, #arrow-bar button:hover {
+                display: inline-block;
+                margin-left: 2px;
+                margin-right: 2px;
+
+            }
+
+            /* z-index adjust so slider stuff will be below the dropdown */
+            .slider.leaflet-control, #arrow-bar {
+                z-index: 6;
+            }
+
+        #slider-timestamp {
+            width:55%;
+            margin-top:25px;
+            background-color:#FFFFFF;
+            border-radius:5px;
+            padding: 5px;
+            font-family: 'Goudy Bookletter 1911', serif;
+        }
+        .collection-title, .response {
+            font-family: 'Cinzel', serif;
         }
 
-        #loading{
-            position:absolute;
-            height:100%;
-            width:100%;
-            background-image:url("images/loader.gif");
-            background-repeat:no-repeat;
-            background-position:center;
-            display:none;
-            z-index:1000;
+        .collection-title {
+            font-size: 1.1em;
+            padding: 6px;
+            margin: 8px;
         }
 
-
-        .easy-button-button {
+        #story-list li {
+            left: 2em;
+            position: relative;
+            list-style-type: none;
+            padding: 4px;
+            margin: 6px;
+            background-color: #ccebc5;
+            color: #545454;
+            font-family: 'Goudy Bookletter 1911', serif;
+            border-radius: 3px;
+            width: 85%;
+            transition: background-color 0.2s;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
             cursor: pointer;
-        }
-
-        .fa-mapicon {
-            font-size: 1.333333333333em;
-        }
-
-        .leaflet-bar {
-            box-shadow:none;
-        }
-
-        #arrow-bar{
-            margin-top:20px;
-        }
-        #arrow-bar button, #arrow-bar button:hover {
-            display: inline-block;
-            margin-left: 2px;
-            margin-right: 2px;
 
         }
 
-        /* z-index adjust so slider stuff will be below the dropdown */
-        .slider.leaflet-control, #arrow-bar {
-            z-index: 6;
+        #story-list li:hover {
+            background-color: #b4cead;
         }
 
-    #slider-timestamp {
-        width:55%;
-        margin-top:25px;
-        background-color:#FFFFFF;
-        border-radius:5px;
-        padding: 5px;
-        font-family: 'Goudy Bookletter 1911', serif;
-    }
-    .collection-title {
-        font-family: 'Cinzel', serif;
-        font-size: 1.1em;
-        padding: 6px;
-        margin: 8px;
+        #story-list li.selected {
+            background-color: #ffa20f;
+        }
 
-    }
+        #story-list .collection-title {
+            left:0;
+            margin: 0.7em 0 0.7em 0;
+            padding: 0.25em 0 0.25em 0;
 
-    #story-list li {
-        left: 2em;
-        position: relative;
-        list-style-type: none;
-        padding: 4px;
-        margin: 6px;
-        background-color: #ccebc5;
-        color: #545454;
-        font-family: 'Goudy Bookletter 1911', serif;
-        border-radius: 3px;
-        width: 85%;
-        transition: background-color 0.2s;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        cursor: pointer;
+        }
 
-    }
+        #select-stories {
+            width: auto;
+            height: auto;
+            font-size: 1.2em;
+            line-height: 1.1;
 
-    #story-list li:hover {
-        background-color: #b4cead;
-    }
+        }
 
-    #story-list li.selected {
-        background-color: #ffa20f;
-    }
-
-    #story-list .collection-title {
-        left:0;
-        margin: 0.7em 0 0.7em 0;
-        padding: 0.25em 0 0.25em 0;
-
-    }
-
-    #select-stories {
-        width: auto;
-        height: auto;
-        font-size: 1.2em;
-        line-height: 1.1;
-
-    }
+        .response .response-text {
+            font-size: 1.5em;
+            top: 40%;
+            left: 105px;
+            color: white;
+            position: absolute;
+        }
 
 
-    /*
-    \ \ / / _ \ \/ /
-     \ V |  __/>  <
-      \_/ \___/_/\_\
-    */
-    .vex.vex-theme-os {
-        padding-top:5%;
-        padding-bottom:0;
-    }
+        div.vex .response {
+            border-radius: 5px;
+            left: 0;
+            top: 0;
+            position: absolute;
+            padding: 8px 0 0 8px;
+            background-color: #3288e6;
+            display: none;
+            width: 100%;
 
-    .vex.vex-theme-os .vex-dialog-button:focus {
-            animation: none;
-    -webkit-animation: none;
-       -moz-animation: none;
-        -ms-animation: none;
-         -o-animation: none;
-         -webkit-backface-visibility: hidden;
-         outline: none;
-    }
 
-    .vex.vex-theme-os .vex-content, .vex.vex-theme-os .vex-dialog-header{
-        background-image:url("images/holmes-bg.jpg");
-    }
-    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-notaplace {
-        background: #B34F15;
-        color: #fff; }
-    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-wrongplace {
-        background: #88991A;
-        color: #fff; }
-    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-onlymentioned {
-        background: #EA564A;
-        color: #fff; }
+        }
 
-    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-primary:hover {
-        background: #3898ff;
-    }
-    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-secondary:hover {
-        background: #f2f2f2;
-    }
-    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-notaplace:hover {
-        background: #e5621b;
-    }
-    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-wrongplace:hover {
-        background: #a1b21e;
-    }
-    .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-onlymentioned:hover {
-        background: #ff5d51;
-    }
+        /*
+        \ \ / / _ \ \/ /
+         \ V |  __/>  <
+          \_/ \___/_/\_\
+        */
+        .vex.vex-theme-os {
+            padding-top:5%;
+            padding-bottom:0;
+        }
 
-    .vex.vex-theme-os .vex-content {
-        border-top: none;
-        max-height:98%;
-    }
-    .vex.vex-theme-os .vex-dialog-header {
-        position: absolute;
-        top: 0;
-        width: 100%;
-        left: 0;
-        border-radius: 5px;
-        padding: 10px 0 5px 10px;
-    }
+        .vex.vex-theme-os .vex-dialog-button:focus {
+                animation: none;
+        -webkit-animation: none;
+           -moz-animation: none;
+            -ms-animation: none;
+             -o-animation: none;
+             -webkit-backface-visibility: hidden;
+             outline: none;
+        }
 
-    .vex.vex-theme-os .vex-dialog-story-title, .vex.vex-theme-os .vex-dialog-button, .title-text {
-        font-family: 'Cinzel', serif;
-    }
+        .vex.vex-theme-os .vex-content, .vex.vex-theme-os .vex-dialog-header{
+            background-image:url("images/holmes-bg.jpg");
+        }
+        .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-notaplace {
+            background: #B34F15;
+            color: #fff; }
+        .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-wrongplace {
+            background: #88991A;
+            color: #fff; }
+        .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-onlymentioned {
+            background: #EA564A;
+            color: #fff; }
 
-    .vex.vex-theme-os .vex-dialog-story-title {
-        font-size: 1.3em;
-    }
-    .vex.vex-theme-os .vex-dialog-form .vex-dialog-message,
-    .vex.vex-theme-os .vex-dialog-form .vex-dialog-input {
-        max-height: 250px;
-        overflow: auto;
-    }
-    .vex.vex-theme-os .vex-dialog-form .vex-dialog-message {
-        margin-bottom: 0.5em;
-    }
-    .vex.vex-theme-os .vex-dialog-form .vex-dialog-text {
-        font-family: 'Goudy Bookletter 1911', serif;
-    }
-    .vex.vex-theme-os .vex-overlay {
-        pointer-events: none;
-    }
+        .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-primary:hover {
+            background: #3898ff;
+        }
+        .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-secondary:hover {
+            background: #f2f2f2;
+        }
+        .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-notaplace:hover {
+            background: #e5621b;
+        }
+        .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-wrongplace:hover {
+            background: #a1b21e;
+        }
+        .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-onlymentioned:hover {
+            background: #ff5d51;
+        }
+
+        .vex.vex-theme-os .vex-content {
+            border-top: none;
+            max-height:98%;
+        }
+        .vex.vex-theme-os .vex-dialog-header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            left: 0;
+            border-radius: 5px;
+            padding: 10px 0 5px 10px;
+        }
+
+        .vex.vex-theme-os .vex-dialog-story-title,
+        .vex.vex-theme-os .vex-dialog-button, .title-text, .response {
+            font-family: 'Cinzel', serif;
+        }
+
+        .vex.vex-theme-os .vex-dialog-story-title {
+            font-size: 1.3em;
+        }
+        .vex.vex-theme-os .vex-dialog-form .vex-dialog-message,
+        .vex.vex-theme-os .vex-dialog-form .vex-dialog-input {
+            max-height: 250px;
+            overflow: auto;
+        }
+        .vex.vex-theme-os .vex-dialog-form .vex-dialog-message {
+            margin-bottom: 0.5em;
+        }
+        .vex.vex-theme-os .vex-dialog-form .vex-dialog-text {
+            font-family: 'Goudy Bookletter 1911', serif;
+        }
+        .vex.vex-theme-os .vex-overlay {
+            pointer-events: none;
+        }
     </style>
   </head>
 
