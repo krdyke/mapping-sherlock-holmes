@@ -27,13 +27,14 @@ module.exports = function(grunt) {
             css: {
                 src:[
                     'lib/leaflet/leaflet.css',
-                    'lib/leaflet.EasyButton/easy-button.css',
+                    'lib/Leaflet.EasyButton/easy-button.css',
                     'exlib/Control.Geocoder.css',
                     'lib/vex/vex.css',
                     'lib/vex/vex-theme-os.css',
                     'style.css'
                 ],
-                dest: 'build/styles.css'
+                dest: 'build/styles.css',
+                nonull: true
             },
             src: {
                 src: [
