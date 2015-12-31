@@ -182,6 +182,8 @@ L.LayerGroup.include({
 
 
 	_snakeNext: function() {
+		var current_txt = $("#snake-text-story").text();
+		var txt;
 
 		var that = this;
 
@@ -203,14 +205,24 @@ L.LayerGroup.include({
 		if ('snakeIn' in currentLayer) {
 
 			currentLayer.once('snakeend', function(){
-				setTimeout(this._snakeNext.bind(this), 1);
+				setTimeout(this._snakeNext.bind(this), this.options.snakingPause);
 			}, this);
 			$("#snake-text-header").fadeOut(100, function(){
-				$("#snake-text-header").text(that._snakingLayers[that._snakingLayersDone-2].feature.properties.name +
-						" to " +
-						that._snakingLayers[that._snakingLayersDone].feature.properties.name)
-						.fadeIn(100);
+				if (that._snakingLayers[that._snakingLayersDone-2].feature){
+					$("#snake-text-header").text(that._snakingLayers[that._snakingLayersDone-2].feature.properties.name +
+							" to " +
+							that._snakingLayers[that._snakingLayersDone].feature.properties.name)
+							.fadeIn(100);
+				}
 			});
+
+			txt = that._snakingLayers[that._snakingLayersDone].feature.properties.text_chunk;
+			txt = "... " + txt.slice(txt.length/4, (txt.length/4)*3) + " ...";
+			if (current_txt !== txt){
+				$("#snake-text-story").fadeOut(100, function(){
+					$("#snake-text-story").text(txt).fadeIn(100);
+				});
+			}
 
 			currentLayer.snakeIn();
 
@@ -220,10 +232,17 @@ L.LayerGroup.include({
 				$("#snake-text-header").text(currentLayer.feature.properties.name).fadeIn(100);
 			});
 
-			$("#snake-text-story").fadeOut(100, function(){
-				$("#snake-text-story").text("... " + currentLayer.feature.properties.text_chunk.slice(currentLayer.feature.properties.text_chunk.length/4, (currentLayer.feature.properties.text_chunk.length/4)*3) + " ...").fadeIn(100);
-			});
+			txt = currentLayer.feature.properties.text_chunk;
+			txt = "... " + txt.slice(txt.length/4, (txt.length/4)*3) + " ...";
+			if (current_txt !== txt){
+				$("#snake-text-story").fadeOut(100, function(){
+					$("#snake-text-story").text(txt).fadeIn(100);
+				});
+			}
 		}
+
+
+
 
 
 		this.fire('snake');
