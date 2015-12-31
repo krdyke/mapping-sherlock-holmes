@@ -203,7 +203,7 @@ div.vex .response {
 }
 
 .vex.vex-theme-os .vex-content, .vex.vex-theme-os .vex-dialog-header{
-    background-image:url("/images/holmes-bg.jpg");
+    background-image:url("../images/holmes-bg.jpg");
 }
 .vex.vex-theme-os .vex-dialog-button.vex-dialog-button-notaplace {
     background: #B34F15;
