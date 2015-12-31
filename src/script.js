@@ -73,6 +73,7 @@ Array.prototype.unique = function() {
     return arr;
 };
 
+//and now start the show
 var holmes_map = {};
 
 holmes_map.TABLE_NAME = "sherlock_v2_copy";
@@ -101,7 +102,7 @@ holmes_map.toggle_story = function(story){
 };
 
 holmes_map.story_list = document.getElementById("story-list");
-$(holmes_map.story_list).find("li").each(function(i,e){
+$(holmes_map.story_list).find("button").each(function(i,e){
     e.onclick = function(){
         this.classList.toggle("selected");
         holmes_map.toggle_story(this.textContent);
@@ -120,37 +121,124 @@ L.Icon.Default.imagePath = "/lib/leaflet/";
 
 holmes_map.animate_story = {};
 
+holmes_map.animate_story.control_next = L.easyButton(
+    "fa-step-forward fa-mapicon",
+    function(btn,map){
+        console.log("next");
+        //var val = holmes_map.slider_control._slider.slider("value");
+        //holmes_map.slider_control._slider.slider("value", val + 1);
+    },
+    "Next place",
+    {
+        "position" : "topright",
+
+    }
+);
+
+holmes_map.animate_story.control_previous = L.easyButton(
+    "fa-step-backward fa-mapicon",
+    function(btn,map){
+        console.log("previous");
+        //var val = holmes_map.slider_control._slider.slider("value");
+        //holmes_map.slider_control._slider.slider("value", val - 1);
+    },
+    "Previous place",
+    {
+        "position" : "topright",
+    }
+);
+
+holmes_map.animate_story.control_pause = L.easyButton({
+    states:[
+        {
+            stateName: "unpaused",
+            icon:"fa-pause-circle fa-mapicon",
+            onClick: function(control, map){
+                console.log("pause");
+                holmes_map.animate_story.layer_group._stop_snaking = true;
+                control.state("paused");
+                //var val = holmes_map.slider_control._slider.slider("value");
+                //holmes_map.slider_control._slider.slider("value", val - 1);
+            },
+            options: {"position" : "topright"}
+        },
+        {
+            stateName: "paused",
+            icon:"fa-pause-circle-o fa-mapicon",
+            onClick: function(control, map){
+                console.log("unpause");
+                holmes_map.animate_story.layer_group._stop_snaking = false;
+                holmes_map.animate_story.layer_group.snakeIn();
+                control.state("unpaused");
+                //var val = holmes_map.slider_control._slider.slider("value");
+                //holmes_map.slider_control._slider.slider("value", val - 1);
+            },
+            options: {"position" : "topright"}
+        }
+    ],
+    position:"topright"
+});
+
 holmes_map.animate_story.play_button = L.easyButton({
     states:[
     {
         stateName: "play",
         icon:"fa-play fa-mapicon",
         onClick: function(control){
-            holmes_map.map.fitBounds(holmes_map.cartodb_layer.getBounds());
-            holmes_map.map.removeLayer(holmes_map.cartodb_layer);
-            var a = holmes_map.animate_story.get_list_of_layers();
-            var b = holmes_map.animate_story.sort_layers_by_charindex(a);
-            var c = holmes_map.animate_story.add_tweener_polylines(b);
-            var d = holmes_map.animate_story.create_layer_group(c);
-            d.addTo(holmes_map.map).snakeIn();
-            control.state("pause");
+            if (holmes_map.story_array.length === 0){
+                vex.dialog.alert("Please select a story to animate.");
+                return;
+            }
+            else if (holmes_map.story_array.length > 1) {
+                vex.dialog.alert("Only one story can be animated at a time.");
+                return;
+            }
+            else if (holmes_map.story_array.length === 1) {
+                holmes_map.map.fitBounds(holmes_map.cartodb_layer.getBounds());
+                holmes_map.map.removeLayer(holmes_map.cartodb_layer);
+                holmes_map.animate_story.get_list_of_layers();
+                holmes_map.animate_story.sort_layers_by_charindex();
+                holmes_map.animate_story.add_tweener_polylines();
+                holmes_map.animate_story.create_layer_group();
+                holmes_map.animate_story.layer_group._stop_snaking = false;
+                holmes_map.animate_story.set_layers();
+                holmes_map.animate_story.layer_group.addTo(holmes_map.map).snakeIn();
+                holmes_map.animate_story.control_pause.addTo(holmes_map.map);
+                holmes_map.animate_story.control_next.addTo(holmes_map.map);
+                holmes_map.animate_story.control_previous.addTo(holmes_map.map);
+                $("div.leaflet-middle.leaflet-control-container").show();
+                control.state("stop");
+            }
+            else {
+                vex.dialog.alert("An error occurred. Please try again.");
+                return;
+            }
+
         },
         options:{position:"topright"}
     },
     {
-        stateName: "pause",
-        icon:"fa-pause fa-mapicon",
+        stateName: "stop",
+        icon:"fa-stop fa-mapicon",
         onClick: function(control){
-            holmes_map.cartodb_layer.addTo(holmes_map.map);
+            holmes_map.animate_story.layer_group._stop_snaking = true;
+            holmes_map.animate_story.layer_group._snaking = false;
+            holmes_map.animate_story.pause_index = false;
+            holmes_map.animate_story.layer_group.clearLayers();
             holmes_map.animate_story.layer_group.remove();
+            holmes_map.animate_story.control_pause.removeFrom(holmes_map.map);
+            holmes_map.animate_story.control_next.removeFrom(holmes_map.map);
+            holmes_map.animate_story.control_previous.removeFrom(holmes_map.map);
+            holmes_map.cartodb_layer.addTo(holmes_map.map);
+            $("div.leaflet-middle.leaflet-control-container").fadeOut();
             control.state("play");
         }
     }],
     position:"topright"
 });
 
-holmes_map.animate_story.sort_layers_by_charindex = function(layers_list){
-    return layers_list.sort(function(a,b){
+holmes_map.animate_story.sort_layers_by_charindex = function(){
+    holmes_map.animate_story.sorted_layers = holmes_map.animate_story.layers_list.sort(function(a,b){
         a = a.feature.properties.charindex;
         b = b.feature.properties.charindex;
 
@@ -174,11 +262,12 @@ holmes_map.animate_story.get_list_of_layers = function(){
     for (var i in holmes_map.cartodb_layer._layers){
         layers.push(holmes_map.cartodb_layer._layers[i]);
     }
-    return layers;
+    holmes_map.animate_story.layers_list = layers;
 };
 
 
-holmes_map.animate_story.add_tweener_polylines = function(layers){
+holmes_map.animate_story.add_tweener_polylines = function(){
+    var layers = holmes_map.animate_story.sorted_layers;
     var l = [], g;
     for (var i = 0; i < layers.length; i++){
         l.push(layers[i]);
@@ -190,14 +279,19 @@ holmes_map.animate_story.add_tweener_polylines = function(layers){
             }));
         }
     }
-    return l;
+    holmes_map.animate_story.layers_with_tweeners = l;
 };
 
 
-holmes_map.animate_story.create_layer_group = function(layers){
-    holmes_map.animate_story.layer_group = L.layerGroup();
-    holmes_map.animate_story.layer_group.options.snakingLayers = layers;
-    holmes_map.animate_story.layer_group.options.snakingPause = 3000;
+holmes_map.animate_story.set_layers = function(){
+    holmes_map.animate_story.layer_group.options.snakingLayers = holmes_map.animate_story.layers_with_tweeners;
+};
+
+holmes_map.animate_story.create_layer_group = function(){
+    if (!holmes_map.animate_story.layer_group){
+        holmes_map.animate_story.layer_group = L.layerGroup();
+    }
+    holmes_map.animate_story.layer_group.options.snakingPause = 4000;
     return holmes_map.animate_story.layer_group;
 };
 
@@ -206,6 +300,7 @@ holmes_map.select_story_button = L.easyButton(
     "<span class='title-text'>Select<br/>Stories</span>",
     function(btn, map){
         vex.dialog.open({
+            contentClassName:"vex-dialog-select-stories",
             message: "Please select the stories to view",
             input: holmes_map.story_list,
             callback: function(value){
@@ -218,13 +313,14 @@ holmes_map.select_story_button = L.easyButton(
                 vex.dialog.buttons.NO,
                 $.extend({}, vex.dialog.buttons.NO, {
                     className: 'vex-dialog-button-notaplace',
-                    text: 'All/None',
+                    text: 'Deselect All',
                 click: function($vexContent, event) {
-                    console.log("select all/none here");
+                    $("#story-list button").removeClass("selected");
+                    holmes_map.story_array = [];
                 }})
             ]
         });
-        $('.vex-overlay').height($(document).height());
+        $('.vex-overlay').height($(document).height()+200);
     },
     "Select stories",
     {
@@ -268,6 +364,7 @@ holmes_map.cartodb_layer_click = function(a){
         "<input type='hidden' class='id-hidden' value='+" + a.layer._leaflet_id + "'/>";
 
     vex.dialog.open({
+        contentClassName: "vex-dialog-place-review",
         message: popupContent,
         buttons: [
         $.extend({}, vex.dialog.buttons.NO, { className: 'vex-dialog-button-notaplace',
@@ -417,7 +514,13 @@ function main() {
     //holmes_map.oms = new OverlappingMarkerSpiderfier(map);
 
     holmes_map.select_story_button.addTo(map);
-    holmes_map.animate_story.play_button.addTo(map);
+
+
+    if (window.hasOwnProperty("performance") &&
+         "now" in window.performance){
+             holmes_map.animate_story.play_button.addTo(map);
+    }
+
     holmes_map.zoom_to_full_extent_button.addTo(map);
 
     /*
@@ -602,30 +705,9 @@ function main() {
                 }
             }
         });
-
-        holmes_map.slider_control_right = L.easyButton(
-            "fa-arrow-right fa-mapicon",
-            function(btn,map){
-                var val = holmes_map.slider_control._slider.slider("value");
-                holmes_map.slider_control._slider.slider("value", val + 1);
-            },
-            "Next place",
-            {
-                "position" : "bottomright",
-
-            });
-
-        holmes_map.slider_control_left = L.easyButton(
-            "fa-arrow-left fa-mapicon",
-            function(btn,map){
-                var val = holmes_map.slider_control._slider.slider("value");
-                holmes_map.slider_control._slider.slider("value", val - 1);
-            },
-            "Previous place",
-            {
-                "position" : "bottomright",
-            });
-
 */
+
+
+
     });
 }

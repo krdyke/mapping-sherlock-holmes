@@ -1,0 +1,276 @@
+html, body, #map {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+#loading{
+    position:absolute;
+    height:100%;
+    width:100%;
+    background-image:url("/images/loader.gif");
+    background-repeat:no-repeat;
+    background-position:center;
+    display:none;
+    z-index:1000;
+}
+
+
+.leaflet-bar button,
+.leaflet-bar button:hover,
+.leaflet-bar a, .leaflet-bar a:hover {
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+}
+
+.easy-button-button .button-state{
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.easy-button-button {
+    cursor: pointer;
+}
+
+.fa-mapicon {
+    font-size: 1.8em;
+}
+
+.leaflet-middle {
+    font-family: 'Goudy Bookletter 1911', serif;
+
+    width: 50%;
+    left: 25%;
+    text-align: center;
+    color: white;
+
+}
+#snake-text-header{
+    font-size: 2.5em;
+    line-height: 1.2em;
+    text-shadow: 0 0 6px black, 0 0 5px black, 0 0 4px black,
+        0 0 3px black, 0 0 2px black, 0 0 1px black;
+}
+
+#snake-text-story{
+    text-align: left;
+    font-size: 1.5em;
+    line-height: 1.4em;
+    text-shadow: 0 0 5px black, 0 0 4px black, 0 0 3px black, 0 0 2px black, 0 0 1px black;
+}
+
+
+
+.leaflet-bar {
+    box-shadow:none;
+}
+
+#arrow-bar{
+    margin-top:20px;
+}
+#arrow-bar button, #arrow-bar button:hover {
+    display: inline-block;
+    margin-left: 2px;
+    margin-right: 2px;
+
+}
+
+/* z-index adjust so slider stuff will be below the dropdown */
+.slider.leaflet-control, #arrow-bar {
+    z-index: 6;
+}
+
+#slider-timestamp {
+    width:55%;
+    margin-top:25px;
+    background-color:#FFFFFF;
+    border-radius:5px;
+    padding: 5px;
+    font-family: 'Goudy Bookletter 1911', serif;
+}
+.collection-title, .response {
+    font-family: 'Cinzel', serif;
+}
+
+span.collection-title {
+    display: inline-block;
+    font-size: 1.1em;
+    padding: 6px;
+    margin: 8px;
+}
+
+#story-list .vex-dialog-button.collection-title {
+
+}
+
+.vex.vex-theme-os .vex-dialog-place-review .vex-dialog-button {
+    margin: 0.2em 0 0.2em 0.5em;
+}
+
+.vex-dialog-input #story-list  button.vex-dialog-button {
+    display:block;
+    position: relative;
+    list-style-type: none;
+    margin: 6px;
+    background-color: #ccebc5;
+    color: #545454;
+    font-family: 'Goudy Bookletter 1911', serif;
+    font-size: 1rem;
+    border-radius: 3px;
+    width: 85%;
+    transition: background-color 0.2s;
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+       -khtml-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+
+}
+
+.vex-dialog-input #story-list button.vex-dialog-button:hover {
+    background-color: #b4cead;
+}
+
+.vex-dialog-input #story-list button.vex-dialog-button.selected {
+    background-color: #ffa20f;
+}
+
+#story-list .collection-title {
+    left:0;
+    margin: 0.2em 0 0.2em 0;
+
+}
+
+#select-stories {
+    width: auto;
+    height: auto;
+    font-size: 1.2em;
+    line-height: 1.1;
+
+}
+
+.response .response-text {
+    font-size: 1.5em;
+    top: 40%;
+    left: 105px;
+    color: white;
+    position: absolute;
+}
+
+
+div.vex .response {
+    border-radius: 5px;
+    left: 0;
+    top: 0;
+    position: absolute;
+    padding: 8px 0 0 8px;
+    background-color: #3288e6;
+    display: none;
+    width: 100%;
+
+
+}
+
+/*
+\ \ / / _ \ \/ /
+ \ V |  __/>  <
+  \_/ \___/_/\_\
+*/
+.vex.vex-theme-os {
+    padding-top:5%;
+    padding-bottom:0;
+}
+
+.vex.vex-theme-os .vex-dialog-button:focus {
+    animation: none;
+    -webkit-animation: none;
+    -moz-animation: none;
+    -ms-animation: none;
+    -o-animation: none;
+    -webkit-backface-visibility: hidden;
+    outline: none;
+}
+
+.vex.vex-theme-os .vex-content, .vex.vex-theme-os .vex-dialog-header{
+    background-image:url("/images/holmes-bg.jpg");
+}
+.vex.vex-theme-os .vex-dialog-button.vex-dialog-button-notaplace {
+    background: #B34F15;
+    color: #fff;
+}
+.vex.vex-theme-os .vex-dialog-button.vex-dialog-button-wrongplace {
+    background: #88991A;
+    color: #fff;
+}
+.vex.vex-theme-os .vex-dialog-button.vex-dialog-button-onlymentioned {
+    background: #EA564A;
+    color: #fff;
+}
+
+.vex.vex-theme-os .vex-dialog-button.vex-dialog-button-primary:hover {
+    background: #3898ff;
+}
+.vex.vex-theme-os .vex-dialog-button.vex-dialog-button-secondary:hover {
+    background: #f2f2f2;
+}
+.vex.vex-theme-os .vex-dialog-button.vex-dialog-button-notaplace:hover {
+    background: #e5621b;
+}
+.vex.vex-theme-os .vex-dialog-button.vex-dialog-button-wrongplace:hover {
+    background: #a1b21e;
+}
+.vex.vex-theme-os .vex-dialog-button.vex-dialog-button-onlymentioned:hover {
+    background: #ff5d51;
+}
+
+.vex.vex-theme-os .vex-content {
+    border-top: none;
+    max-height: 98%;
+}
+
+.vex.vex-theme-os .vex-content.vex-dialog-place-review {
+    min-height: 490px;
+}
+
+.vex.vex-theme-os .vex-content.vex-dialog-select-stories {
+    min-height: 375px;
+}
+
+.vex.vex-theme-os .vex-dialog-header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    left: 0;
+    border-radius: 5px;
+    padding: 10px 0 5px 10px;
+}
+
+.vex.vex-theme-os .vex-dialog-story-title,
+.vex.vex-theme-os .vex-dialog-button, .title-text, .response {
+    font-family: 'Cinzel', serif;
+}
+
+.vex.vex-theme-os .vex-dialog-story-title {
+    font-size: 1.3em;
+}
+.vex.vex-theme-os .vex-dialog-form .vex-dialog-message,
+.vex.vex-theme-os .vex-dialog-form .vex-dialog-input {
+    max-height: 250px;
+    overflow: auto;
+}
+.vex.vex-theme-os .vex-dialog-form .vex-dialog-message {
+    margin-bottom: 0.5em;
+}
+.vex.vex-theme-os .vex-dialog-form .vex-dialog-text {
+    font-family: 'Goudy Bookletter 1911', serif;
+}
+/*  not sure why i did this to begin with. was preventing close on overlay click
+.vex.vex-theme-os .vex-overlay {
+    pointer-events: none;
+}
+*/
